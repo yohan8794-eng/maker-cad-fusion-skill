@@ -33,6 +33,21 @@ class FakeResponse:
 
 
 class PublicMvpTests(unittest.TestCase):
+    def test_skill_has_distinct_first_run_and_offline_chat_paths(self):
+        skill = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("### No pairing code yet", skill)
+        self.assertIn("Do not ask for a code without context", skill)
+        self.assertIn("### Pairing code provided", skill)
+        self.assertIn("do not recommend reinstalling first", skill)
+        self.assertIn("Do not ask design questions or submit a Job yet", skill)
+
+    def test_references_match_device_scoped_lifecycle(self):
+        reference_text = "\n".join(path.read_text(encoding="utf-8") for path in (SKILL / "references").glob("*.md"))
+        self.assertNotIn("assets/examples", reference_text)
+        self.assertNotIn("queued -> claimed", reference_text)
+        self.assertNotIn("single runner", reference_text.lower())
+        self.assertIn("queued → running → completed|failed", reference_text)
+
     def test_device_identity_is_persisted_and_safe(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

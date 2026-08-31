@@ -4,7 +4,7 @@ Use schema version `1.0`. Use millimetres at the job boundary; the Fusion MCP ad
 
 ## Required semantics
 
-- `part_type`: `mounting_plate`, `bracket`, or `simple_mount`.
+- `part_type`: `mounting_plate`, `bracket`, `simple_mount`, `sensor_mount`, `motor_mount`, `pcb_mount`, or `adapter_plate`.
 - `parameters`: named source dimensions for review and future regeneration.
 - `coordinate_system`: right-handed world coordinates, chosen origin strategy, and expected bounding box for verification.
 - `operations`: ordered, stable IDs. References such as `profile_ref`, `body_ref`, and `source_ref` must point to an earlier operation ID.
@@ -18,8 +18,8 @@ Named `parameters` are authoritative job inputs. Version 1.0 guarantees determin
 
 ## Job lifecycle
 
-`queued -> claimed -> running -> succeeded|failed`. A worker must claim one job before execution and write a structured result or error. Retrying must create a new attempt or use an atomic claim; never let two runners execute the same queued row.
+`queued -> running -> completed|failed`. The atomic claim RPC changes one device-targeted queued Job directly to running and records `claimed_by`/`claimed_at`. Retrying must create a new Job; never let two runners execute the same row.
 
 ## Example
 
-See [../assets/examples/mounting-plate.json](../assets/examples/mounting-plate.json). It describes an 80 x 50 x 3 mm plate with four 3.2 mm through holes, 5 mm edge offsets, and R2 vertical fillets.
+The canonical fixture is an 80 x 50 x 3 mm plate with four 3.2 mm through holes, 5 mm edge offsets, and R2 vertical fillets. Build it with a rectangle sketch, 3 mm new-body extrude, four explicit through-all hole centres, and a vertical-edge fillet.

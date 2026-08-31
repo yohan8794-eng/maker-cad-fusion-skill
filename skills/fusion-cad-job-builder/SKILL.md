@@ -9,7 +9,23 @@ Use a Bridge-first, fail-closed workflow. Never claim Fusion or Supabase succeed
 
 ## 1. Require a connected Bridge
 
-Ask for the user's 10-character pairing code if the conversation has none. Check it before asking CAD questions:
+Determine the Bridge state before asking CAD design questions. Follow exactly one branch below.
+
+### No pairing code yet
+
+Treat this as a first-run state. Do not ask for a code without context. Explain directly in chat:
+
+1. “Fusion 360에서 모델을 자동 생성하려면 최초 1회 Fusion Local Bridge 설치가 필요합니다.”
+2. “Bridge는 Timely의 CAD 작업을 사용자 본인의 Fusion으로 안전하게 전달합니다.”
+3. Download: https://github.com/yohan8794-eng/maker-cad-fusion-skill/releases/latest/download/fusion-local-bridge.zip
+4. Extract the ZIP, start Fusion 360, open `Utilities > Scripts and Add-Ins`, add the `FusionCadJobRunner` folder, and run it.
+5. Enable `Run on Startup`, then enter the 10-character pairing code shown by Fusion in this chat.
+
+Do not merely send the user to a README. Give these steps in the conversation. Do not ask design questions or submit a Job yet.
+
+### Pairing code provided
+
+Check it before asking CAD questions:
 
 ```powershell
 python scripts\bridge_api.py bridge-status <PAIRING_CODE>
@@ -17,15 +33,11 @@ python scripts\bridge_api.py bridge-status <PAIRING_CODE>
 
 Continue only when the result is `online` and `last_seen` is within 90 seconds. Never enqueue a global or unpaired job.
 
-If missing, unknown, or offline, stop submission and explain directly in chat:
+If the code is unknown, say that it was not found, ask the user to copy the code shown by the running Add-in again, and offer the first-run steps only if they have not installed the Bridge.
 
-1. “Fusion 360에서 모델을 자동 생성하려면 최초 1회 Fusion Local Bridge 설치가 필요합니다.”
-2. Download: https://github.com/yohan8794-eng/maker-cad-fusion-skill/releases/latest/download/fusion-local-bridge.zip
-3. Extract the ZIP, start Fusion 360, open `Utilities > Scripts and Add-Ins`, add the `FusionCadJobRunner` folder, and run it.
-4. Enable `Run on Startup` so it starts with Fusion.
-5. Enter the pairing code shown by Fusion in this chat, then check status again.
+If the code is known but the Bridge is `offline`, do not recommend reinstalling first. Say: “등록된 Bridge가 현재 오프라인입니다. Fusion 360을 실행하고 Scripts and Add-Ins에서 FusionCadJobRunner를 Run한 뒤 다시 확인하겠습니다.” Recheck status after the user starts it. Show reinstall instructions only when the Add-in is missing or cannot start.
 
-Do not merely send the user to a README. Give these steps in the conversation. Read [LOCAL_FUSION_SETUP.md](references/LOCAL_FUSION_SETUP.md) when detailed help is needed.
+If it is `online`, confirm the connection briefly and continue to design clarification. Read [LOCAL_FUSION_SETUP.md](references/LOCAL_FUSION_SETUP.md) when detailed help is needed.
 
 ## 2. Clarify the design
 
