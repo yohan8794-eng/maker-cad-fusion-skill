@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "name": "80x50 mounting plate",
+  "part_type": "mounting_plate",
+  "units": "mm",
+  "coordinate_system": {"handedness": "right", "origin": "center", "expected_bounds": {"min": [-40, -25, 0], "max": [40, 25, 3]}},
+  "parameters": {
+    "width": 80,
+    "height": 50,
+    "thickness": 3,
+    "hole_diameter": 3.2,
+    "hole_edge_offset": 5,
+    "fillet_radius": 2
+  },
+  "material": null,
+  "process": "FDM",
+  "assumptions": [],
+  "operations": [
+    {"id": "base_sketch", "type": "sketch", "plane": "xy", "shape": "rectangle", "origin": [-40, -25], "width": 80, "height": 50},
+    {"id": "base_body", "type": "extrude", "profile_ref": "base_sketch", "distance": 3, "operation": "new_body", "direction": "positive"},
+    {"id": "mounting_holes", "type": "hole", "body_ref": "base_body", "diameter": 3.2, "extent": "through_all", "centres": [[-35, -20], [35, -20], [-35, 20], [35, 20]], "face": "top"},
+    {"id": "edge_round", "type": "fillet", "body_ref": "base_body", "radius": 2, "edge_selection": "vertical"}
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://timely.local/schemas/cad-job-1.0.json",
+  "title": "Timely Fusion CAD Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "name", "part_type", "units", "coordinate_system", "parameters", "operations"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 120},
+    "part_type": {"enum": ["mounting_plate", "bracket", "simple_mount", "sensor_mount", "motor_mount", "pcb_mount", "adapter_plate"]},
+    "units": {"const": "mm"},
+    "coordinate_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handedness", "origin", "expected_bounds"],
+      "properties": {
+        "handedness": {"const": "right"},
+        "origin": {"enum": ["center", "lower_left", "assembly_datum"]},
+        "expected_bounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max"],
+          "properties": {
+            "min": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}], "minItems": 3, "maxItems": 3},
+            "max": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}], "minItems": 3, "maxItems": 3}
+          }
+        }
+      }
+    },
+    "parameters": {"type": "object", "additionalProperties": {"type": "number", "exclusiveMinimum": 0}},
+    "material": {"type": ["string", "null"]},
+    "process": {"type": ["string", "null"]},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "operations": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": true,
+        "required": ["id", "type"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+          "type": {"enum": ["sketch", "extrude", "hole", "fillet", "pattern"]}
+        }
+      }
+    }
+  }
+}

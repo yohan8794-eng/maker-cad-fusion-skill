@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fusion CAD Job Builder"
+  short_description: "Natural language to Fusion-ready CAD jobs"
+  default_prompt: "Use $fusion-cad-job-builder to clarify my maker part requirements and create a validated CAD Job JSON."

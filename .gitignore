@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.secret*
+config.json
+**/config.json
+**/public_config.json
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dist/
+*.log

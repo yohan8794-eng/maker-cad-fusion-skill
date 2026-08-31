@@ -1,0 +1,11 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "d7ba4118-c377-48b9-a305-bd96feab7ab4",
+  "author": "Timely MABC 2026",
+  "description": {"": "Supabase CAD Job runner for Fusion 360"},
+  "version": "0.2.0",
+  "runOnStartup": true,
+  "supportedOS": "windows|mac",
+  "editEnabled": true
+}
