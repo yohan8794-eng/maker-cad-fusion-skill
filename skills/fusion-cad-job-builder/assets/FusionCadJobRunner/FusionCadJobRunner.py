@@ -9,7 +9,10 @@ import traceback
 import adsk.core
 import adsk.fusion
 
-from .bridge_client import BridgeClient, BridgeClientError, load_or_create_config
+try:
+    from .bridge_client import BridgeClient, BridgeClientError, load_or_create_config
+except ImportError:  # Fusion may load an Add-in as a top-level module.
+    from bridge_client import BridgeClient, BridgeClientError, load_or_create_config
 
 EVENT_ID = "timely.fusion-cad-job.v1"
 POLL_SECONDS = 3

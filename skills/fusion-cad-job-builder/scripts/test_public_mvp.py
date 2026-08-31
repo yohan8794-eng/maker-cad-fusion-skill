@@ -65,6 +65,7 @@ class PublicMvpTests(unittest.TestCase):
         self.assertIn("for update skip locked", sql)
         self.assertIn("claimed_by=p_device_id", sql)
         self.assertIn("and status='running'", sql)
+        self.assertIn("('completed','failed')", sql)
         self.assertIn("enable row level security", sql)
         self.assertIn("revoke all on public.devices, public.cad_jobs from anon, authenticated", sql)
         self.assertNotIn("service_role", (SKILL / "assets/FusionCadJobRunner/config.example.json").read_text(encoding="utf-8").lower())
@@ -81,11 +82,15 @@ class PublicMvpTests(unittest.TestCase):
             self.assertTrue(any(x.startswith("scripts/") for x in names))
             self.assertTrue(any(x.startswith("references/") for x in names))
             self.assertFalse(any(".env" in x or Path(x).name == "config.json" or "__pycache__" in x or x.endswith(".pyc") for x in names))
+            public_config = json.loads(archive.read("scripts/public_config.json"))
+            self.assertTrue(public_config["supabase_publishable_key"].startswith("sb_publishable_"))
         with zipfile.ZipFile(bridge_zip) as archive:
             names = set(archive.namelist())
             self.assertIn("FusionCadJobRunner/FusionCadJobRunner.py", names)
             self.assertIn("FusionCadJobRunner/FusionCadJobRunner.manifest", names)
             self.assertFalse(any(Path(x).name == "config.json" or "__pycache__" in x or x.endswith(".pyc") for x in names))
+            public_config = json.loads(archive.read("FusionCadJobRunner/config.example.json"))
+            self.assertTrue(public_config["supabase_publishable_key"].startswith("sb_publishable_"))
 
 
 if __name__ == "__main__":
